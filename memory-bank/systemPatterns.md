@@ -33,3 +33,18 @@ It is optional, but recommended to be updated as the project evolves.
 *   [2026-03-31 15:26:00] — **Mocks explicites** pour toutes les dépendances externes (TypeORM DataSource, fetch)
 *   [2026-03-31 15:26:00] — **Exclusions couverture** : `main.ts`, `*.module.ts` — fichiers de câblage sans logique testable
 *   [2026-03-31 15:26:00] — **Seuil 80%** lignes / branches / fonctions / statements — par package séparément
+
+---
+
+## Expense Management Patterns [2026-04-01]
+
+*   [2026-04-01 09:12:00] — **Routes imbriquées NestJS** : contrôleur `@Controller('expense-reports/:reportId/expenses')` — full path dans le décorateur controller, pas de sous-modules routeurs
+*   [2026-04-01 09:12:00] — **PartialType pour les DTOs de mise à jour** : `UpdateExpenseReportDto extends PartialType(CreateExpenseReportDto)` — pattern NestJS Mapped Types, cohérent et sans duplication
+*   [2026-04-01 09:12:00] — **Guards métier en début de service** : vérification statuts interdits via `ForbiddenException` avant toute mutation — pas de guards NestJS séparés (logique trop couplée au contexte)
+*   [2026-04-01 09:12:00] — **Recalcul automatique `totalAmount`** : méthode privée `recalculateReportTotal()` appelée après chaque mutation d'une expense — SUM SQL via QueryBuilder
+*   [2026-04-01 09:12:00] — **Upload fichiers** : multer DiskStorage, fileFilter MIME + limite 50MB dans la config, double validation dans le service
+*   [2026-04-01 09:12:00] — **Suppression fichiers physiques** : `fs.unlinkSync(storagePath)` puis `repo.delete(id)` — erreur `unlinkSync` loggée mais non bloquante
+*   [2026-04-01 09:12:00] — **UUID v4 pour les noms de fichier** : `${uuidv4()}${ext}` — unicité garantie, pas de collision, pas de path traversal
+*   [2026-04-01 09:12:00] — **Initialisation répertoires au démarrage** : `fs.mkdirSync(dir, { recursive: true })` en top-level de module ou `main.ts` — pattern identique à `DatabaseModule` pour `data/`
+*   [2026-04-01 09:12:00] — **Pagination standardisée** : `{ data: T[], total, page, limit, totalPages }` — structure réutilisable pour tous les GET liste
+*   [2026-04-01 09:12:00] — **Filtres QueryBuilder** : conditions `andWhere()` conditionnelles — filtre `expenseCategories` via sous-requête `EXISTS`

@@ -1,5 +1,27 @@
 # Decision Log
 
+[2026-04-01 14:16:00] - Integration finale expense management
+
+## Decision
+
+*   Did NOT modify `database.module.ts` — `autoLoadEntities: true` already handles entity discovery via `forFeature()`
+*   Used **direct DataSource approach** for seed (not NestJS context bootstrap) since sqljs DataSource with `location` + `autoSave` works standalone
+*   Created `backend/nest-cli.json` with `entryFile: "backend/src/main"` to fix NestJS CLI entry point mismatch caused by `tsconfig.json` `rootDir: ".."`
+*   Used `process.cwd()` (not `__dirname`) for `ServeStaticModule.rootPath` for consistency with the dev/production path
+
+## Rationale
+
+*   `autoLoadEntities: true` in TypeOrmModule.forRoot means entities registered via `forFeature()` are auto-discovered — adding them to `forRoot` entities array would be redundant
+*   Without `nest-cli.json`, `nest start --watch` defaults to `dist/main.js` but tsconfig outputs to `dist/backend/src/main.js` → old stale `dist/main.js` was being executed
+*   `deleteOutDir: true` in `nest-cli.json` ensures clean builds prevent stale file issues
+
+## Implementation Details
+
+*   `nest-cli.json` → `entryFile: "backend/src/main"` (matches tsconfig rootDir: ".." output path)
+*   Seed file: `backend/src/database/seeds/expense-management.seed.ts` — standalone script using DataSource
+*   `npm run seed` → `ts-node src/database/seeds/expense-management.seed.ts`
+
+
 This file records architectural and implementation decisions using a list format.
 2026-03-31 14:12:07 - Memory Bank initialized.
 
@@ -38,3 +60,14 @@ This file records architectural and implementation decisions using a list format
 *   `@app/shared` référencé dans `package.json` frontend et backend via `"@app/shared": "*"`
 *   `tsconfig.base.json` racine avec `strict: true`, étendu par chaque package
 *   Compromis `sql.js` documentés : runtime WebAssembly (légèrement plus lent que natif), comportement de persistance différent en browser vs Node.js (Node.js = filesystem via `location`)
+
+---
+
+*   [2026-04-01 09:12:00] — **Architecture modulaire 3 modules expense** : `ExpenseReportsModule`, `ExpensesModule`, `ExpenseAttachmentsModule` — chacun autonome avec entité, service, controller, DTOs propres. Pattern identique à `HealthModule`.
+*   [2026-04-01 09:12:00] — **Upload fichiers via Multer DiskStorage** : stockage disque local `backend/uploads/`, nom de fichier = UUID v4 + extension originale, exposition via `ServeStaticModule` sur `/uploads`.
+*   [2026-04-01 09:12:00] — **`synchronize: true` conservé** : le driver `sqljs` est incompatible avec `TypeORM CLI migrations`. Les tables sont créées automatiquement au démarrage. Les fichiers migrations documentés sont structurels uniquement.
+*   [2026-04-01 09:12:00] — **Recalcul `totalAmount` côté service Expense** : à chaque mutation (create/update/delete) d'une expense, `ExpensesService` recalcule et met à jour `totalAmount` du rapport parent via `SUM(amount)`.
+*   [2026-04-01 09:12:00] — **`class-validator` + `class-transformer`** ajoutés + `ValidationPipe({ transform: true, whitelist: true })` global dans `main.ts` — absent du projet de fondation initiale.
+*   [2026-04-01 09:12:00] — **UUID v4 pour les noms de fichiers uploaded** — package `uuid` ajouté. Garantit l'unicité sans collision et évite les path traversal attacks.
+*   [2026-04-01 09:12:00] — **`ExpenseReport.status` non modifiable via CRUD** — `UpdateExpenseReportDto` est `PartialType(CreateExpenseReportDto)` qui n'inclut pas `status`. La transition de statut passe uniquement par `/submit`.
+*   [2026-04-01 09:12:00] — **Route `POST /expense-reports/:reportId/submit` dédiée** — plutôt que PATCH sur `status`, pour exprimer explicitement l'intention métier et déclencher la mise à jour en cascade des expenses.
