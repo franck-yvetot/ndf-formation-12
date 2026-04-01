@@ -143,7 +143,14 @@ export function ExpenseReportDetailsPage(): JSX.Element {
               <ul className="space-y-3" aria-label="Expenses">
                 {expenses.map((expense) => (
                   <li key={expense.id}>
-                    <ExpenseItemCard expense={expense} />
+                    <ExpenseItemCard
+                      expense={expense}
+                      onClick={() =>
+                        navigate(
+                          `/expense-reports/${id ?? ''}/expenses/${expense.id}/edit`,
+                        )
+                      }
+                    />
                   </li>
                 ))}
               </ul>

@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AddExpensePage } from './pages/AddExpensePage';
+import { EditExpensePage } from './pages/EditExpensePage';
 import { ExpenseReportDetailsPage } from './pages/ExpenseReportDetailsPage';
 import { ExpenseReportsPage } from './pages/ExpenseReportsPage';
 import { NewExpenseReportPage } from './pages/NewExpenseReportPage';
@@ -14,6 +15,10 @@ function App(): JSX.Element {
         <Route
           path="/expense-reports/:reportId/expenses/new"
           element={<AddExpensePage />}
+        />
+        <Route
+          path="/expense-reports/:reportId/expenses/:expenseId/edit"
+          element={<EditExpensePage />}
         />
       </Routes>
     </BrowserRouter>

@@ -101,3 +101,55 @@ export async function createExpense(
 
   return response.json() as Promise<IExpense>;
 }
+
+// ─── Get Single Expense ───────────────────────────────────────────────────────
+
+export async function getExpenseById(
+  reportId: string,
+  expenseId: string,
+): Promise<IExpense> {
+  const response = await fetch(
+    `${API_URL}/api/expense-reports/${reportId}/expenses/${expenseId}`,
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch expense: ${response.status} ${response.statusText}`,
+    );
+  }
+
+  return response.json() as Promise<IExpense>;
+}
+
+// ─── Update Expense ───────────────────────────────────────────────────────────
+
+export interface IUpdateExpensePayload {
+  category?: TExpenseCategory;
+  amount?: number;
+  expenseName?: string;
+  description?: string | null;
+  expenseDate?: string;
+}
+
+export async function updateExpense(
+  reportId: string,
+  expenseId: string,
+  payload: IUpdateExpensePayload,
+): Promise<IExpense> {
+  const response = await fetch(
+    `${API_URL}/api/expense-reports/${reportId}/expenses/${expenseId}`,
+    {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to update expense: ${response.status} ${response.statusText}`,
+    );
+  }
+
+  return response.json() as Promise<IExpense>;
+}

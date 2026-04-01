@@ -34,18 +34,22 @@ interface IExpenseItemCardProps {
     category: TExpenseCategory;
     status: TExpenseStatus;
   };
+  onClick?: () => void;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function ExpenseItemCard({ expense }: IExpenseItemCardProps): JSX.Element {
+export function ExpenseItemCard({ expense, onClick }: IExpenseItemCardProps): JSX.Element {
   const statusConfig: IStatusConfig = EXPENSE_STATUS_CONFIG[expense.status] ?? {
     label: expense.status,
     className: 'text-gray-500',
   };
 
   return (
-    <div className="bg-white dark:bg-background-dark/50 rounded-xl p-4 shadow-sm">
+    <div
+      className={`bg-white dark:bg-background-dark/50 rounded-xl p-4 shadow-sm${onClick !== undefined ? ' cursor-pointer' : ''}`}
+      onClick={onClick}
+    >
       <div className="flex items-center gap-4">
         {/* Category icon */}
         <CategoryIcon category={expense.category} />
