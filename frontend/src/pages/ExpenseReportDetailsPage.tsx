@@ -166,9 +166,7 @@ export function ExpenseReportDetailsPage(): JSX.Element {
 
         <button
           className="w-full h-12 bg-white dark:bg-background-dark/50 border border-gray-200 dark:border-white/10 rounded-lg text-primary font-bold flex items-center justify-center gap-2 hover:bg-primary/5 active:scale-[0.98] transition-all"
-          onClick={() => {
-            /* TODO: navigate to add expense */
-          }}
+          onClick={() => navigate(`/expense-reports/${id ?? ''}/expenses/new`)}
         >
           <span className="material-symbols-outlined text-base">add_circle</span>
           Add Expense

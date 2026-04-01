@@ -2,6 +2,7 @@ import type {
   IExpense,
   IExpenseReport,
   IUpdateExpenseReportPayload,
+  TExpenseCategory,
 } from '../types/expense-report.types';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
@@ -67,4 +68,36 @@ export async function getExpensesByReportId(reportId: string): Promise<IExpense[
     return data;
   }
   return data.data;
+}
+
+// ─── Create Expense ───────────────────────────────────────────────────────────
+
+export interface ICreateExpensePayload {
+  category: TExpenseCategory;
+  amount: number;
+  expenseName: string;
+  description?: string | null;
+  expenseDate?: string;
+}
+
+export async function createExpense(
+  reportId: string,
+  payload: ICreateExpensePayload,
+): Promise<IExpense> {
+  const response = await fetch(
+    `${API_URL}/api/expense-reports/${reportId}/expenses`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to create expense: ${response.status} ${response.statusText}`,
+    );
+  }
+
+  return response.json() as Promise<IExpense>;
 }
