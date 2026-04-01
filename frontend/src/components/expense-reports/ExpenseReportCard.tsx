@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import type { IExpenseReport, TExpenseCategory } from '../../types/expense-report.types';
 import { CategoryIconList } from '../ui/CategoryIconList';
 import { StatusBadge } from '../ui/StatusBadge';
@@ -34,6 +35,8 @@ export function ExpenseReportCard({
   report,
   onClick,
 }: IExpenseReportCardProps): JSX.Element {
+  const navigate = useNavigate();
+
   // Extract unique categories from nested expenses (when available)
   const categories: TExpenseCategory[] = report.expenses
     ? report.expenses
@@ -41,19 +44,23 @@ export function ExpenseReportCard({
         .filter((cat, index, self) => self.indexOf(cat) === index)
     : [];
 
+  const handleClick = (): void => {
+    if (onClick) {
+      onClick();
+    } else {
+      navigate(`/expense-reports/${report.id}`);
+    }
+  };
+
   return (
     <article
       className="bg-white dark:bg-background-dark/50 p-4 rounded-xl shadow-sm space-y-3 cursor-pointer hover:shadow-md active:scale-[0.99] transition-all"
-      onClick={onClick}
-      role={onClick ? 'button' : undefined}
-      tabIndex={onClick ? 0 : undefined}
-      onKeyDown={
-        onClick
-          ? (e) => {
-              if (e.key === 'Enter' || e.key === ' ') onClick();
-            }
-          : undefined
-      }
+      onClick={handleClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') handleClick();
+      }}
     >
       {/* Row 1: title + amount */}
       <div className="flex justify-between items-start gap-4">

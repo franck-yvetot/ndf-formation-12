@@ -7,6 +7,8 @@ export type TExpenseReportStatus =
   | 'DENIED'
   | 'PAID';
 
+export type TExpenseStatus = 'CREATED' | 'SUBMITTED' | 'ACCEPTED' | 'DENIED';
+
 export type TExpenseCategory =
   | 'TRAVEL'
   | 'HOTEL'
@@ -30,10 +32,13 @@ export type TSortOrder = 'asc' | 'desc';
 
 export interface IExpense {
   id: string;
+  expenseReportId: string;
   category: TExpenseCategory;
   amount: number;
-  description: string;
+  expenseName: string;
+  description: string | null;
   expenseDate: string;
+  status: TExpenseStatus;
   createdAt: string;
   updatedAt: string;
 }
@@ -100,6 +105,13 @@ export interface ICreateExpenseReportPayload {
   purpose: string;
   /** ISO date string YYYY-MM-DD */
   date: string;
+}
+
+// ─── Update expense report payload ───────────────────────────────────────────
+
+export interface IUpdateExpenseReportPayload {
+  purpose?: string;
+  reportDate?: string;
 }
 
 // ─── Active filter chip ───────────────────────────────────────────────────────
