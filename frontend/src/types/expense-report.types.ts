@@ -30,6 +30,15 @@ export type TSortOrder = 'asc' | 'desc';
 
 // ─── Domain interfaces ────────────────────────────────────────────────────────
 
+/**
+ * Lightweight expense shape returned inside each report by the list endpoint.
+ * Contains only the fields needed to render category icons.
+ */
+export interface TExpenseInReport {
+  amount: number;
+  category: TExpenseCategory;
+}
+
 export interface IExpense {
   id: string;
   expenseReportId: string;
@@ -54,8 +63,8 @@ export interface IExpenseReport {
   submittedAt: string | null;
   createdAt: string;
   updatedAt: string;
-  /** Not returned by the list endpoint — present only when fetching a single report */
-  expenses?: IExpense[];
+  /** Expenses included in this report — returned by both the list and detail endpoints */
+  expenses: TExpenseInReport[];
 }
 
 // ─── Pagination ───────────────────────────────────────────────────────────────

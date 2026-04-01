@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import type { IExpenseReport, TExpenseCategory } from '../../types/expense-report.types';
+import type { IExpenseReport, TExpenseCategory, TExpenseInReport } from '../../types/expense-report.types';
 import { CategoryIconList } from '../ui/CategoryIconList';
 import { StatusBadge } from '../ui/StatusBadge';
 
@@ -37,12 +37,10 @@ export function ExpenseReportCard({
 }: IExpenseReportCardProps): JSX.Element {
   const navigate = useNavigate();
 
-  // Extract unique categories from nested expenses (when available)
+  // Extract unique categories from the expenses array returned by the API
   const categories: TExpenseCategory[] = report.expenses
-    ? report.expenses
-        .map((e) => e.category)
-        .filter((cat, index, self) => self.indexOf(cat) === index)
-    : [];
+    .map((e: TExpenseInReport) => e.category)
+    .filter((cat, index, self) => self.indexOf(cat) === index);
 
   const handleClick = (): void => {
     if (onClick) {

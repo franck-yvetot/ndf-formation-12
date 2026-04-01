@@ -40,6 +40,7 @@ export class ExpenseReport {
 
   @OneToMany(() => Expense, (expense) => expense.expenseReport, {
     cascade: true,
+    eager: false,
   })
   expenses!: Expense[];
 }
