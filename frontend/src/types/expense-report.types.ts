@@ -93,6 +93,15 @@ export interface IFilterState {
   sortOrder: TSortOrder;
 }
 
+// ─── Create expense report payload ───────────────────────────────────────────
+
+export interface ICreateExpenseReportPayload {
+  /** Reason / title for the expense report */
+  purpose: string;
+  /** ISO date string YYYY-MM-DD */
+  date: string;
+}
+
 // ─── Active filter chip ───────────────────────────────────────────────────────
 
 export interface IActiveFilterChip {

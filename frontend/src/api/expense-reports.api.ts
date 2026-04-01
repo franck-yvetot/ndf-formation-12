@@ -1,4 +1,5 @@
 import type {
+  ICreateExpenseReportPayload,
   IExpenseReport,
   IExpenseReportQuery,
   IPaginatedExpenseReports,
@@ -47,4 +48,31 @@ export async function fetchExpenseReportById(id: string): Promise<IExpenseReport
   }
 
   return response.json() as Promise<IExpenseReport>;
+}
+
+export async function createExpenseReport(
+  payload: ICreateExpenseReportPayload,
+): Promise<IExpenseReport> {
+  console.log('[API] Creating expense report:', payload);
+
+  try {
+    const response = await fetch(`${API_URL}/api/expense-reports`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ purpose: payload.purpose, reportDate: payload.date }),
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to create expense report: ${response.status} ${response.statusText}`,
+      );
+    }
+
+    const result = (await response.json()) as IExpenseReport;
+    console.log('[API] Expense report created successfully:', result);
+    return result;
+  } catch (error) {
+    console.error('[API] Failed to create expense report:', error);
+    throw error;
+  }
 }

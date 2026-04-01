@@ -21,6 +21,7 @@ export class ExpenseReportsService {
   ) {}
 
   async create(dto: CreateExpenseReportDto): Promise<ExpenseReport> {
+    console.log('[ExpenseReportsService] Creating expense report:', dto);
     const report = this.reportRepository.create({
       purpose: dto.purpose,
       reportDate: dto.reportDate,
@@ -28,7 +29,9 @@ export class ExpenseReportsService {
       totalAmount: 0,
       submittedAt: null,
     });
-    return this.reportRepository.save(report);
+    const result = await this.reportRepository.save(report);
+    console.log('[ExpenseReportsService] Expense report created with id:', result.id);
+    return result;
   }
 
   async findAll(
@@ -92,7 +95,9 @@ export class ExpenseReportsService {
     const limit = query.limit ?? 20;
     qb.skip((page - 1) * limit).take(limit);
 
+    console.log('[ExpenseReportsService] Fetching expense reports with filters:', query);
     const [data, total] = await qb.getManyAndCount();
+    console.log('[ExpenseReportsService] Found', total, 'expense reports matching filters');
 
     return {
       data,

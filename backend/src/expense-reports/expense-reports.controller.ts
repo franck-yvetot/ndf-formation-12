@@ -46,6 +46,7 @@ export class ExpenseReportsController {
   create(
     @Body() dto: CreateExpenseReportDto,
   ): Promise<ExpenseReportResponseDto> {
+    console.log('[ExpenseReportsController] POST /expense-reports - body:', dto);
     return this.expenseReportsService.create(dto) as Promise<ExpenseReportResponseDto>;
   }
 
@@ -120,6 +121,7 @@ export class ExpenseReportsController {
   findAll(
     @Query() query: QueryExpenseReportsDto,
   ): Promise<PaginatedExpenseReportsResponseDto> {
+    console.log('[ExpenseReportsController] GET /expense-reports - query params:', query);
     return this.expenseReportsService.findAll(query);
   }
 

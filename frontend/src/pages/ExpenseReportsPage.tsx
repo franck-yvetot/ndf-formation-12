@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { AppLayout } from '../components/layout/AppLayout';
 import { SearchBar } from '../components/ui/SearchBar';
 import { FilterChipList } from '../components/ui/FilterChipList';
@@ -6,6 +7,7 @@ import { FilterSortSheet } from '../components/expense-reports/FilterSortSheet';
 import { useExpenseReports } from '../hooks/useExpenseReports';
 
 export function ExpenseReportsPage(): JSX.Element {
+  const navigate = useNavigate();
   const {
     reports,
     isLoading,
@@ -26,9 +28,7 @@ export function ExpenseReportsPage(): JSX.Element {
   return (
     <AppLayout
       headerTitle="Expense Reports"
-      onHeaderAction={() => {
-        // Future: navigate to create report screen
-      }}
+      onHeaderAction={() => navigate('/reports/new')}
       headerActionAriaLabel="Create new expense report"
     >
       {/* Search + Filter controls */}
